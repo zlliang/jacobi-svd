@@ -9,7 +9,6 @@ function [c, s, t] = jacobi(alpha, beta, gamma)
 %   [c, s, t] = JACOBI(alpha, beta, gamma)
 %   [G, t] = JACOBI(alpha, beta, gamma), where G = [c, s; -s, c]
 %   
-%
 % -------------------------------------------------
 % Experiments on Matrix Computations -- Spring 2018
 % Author: Zilong Liang
@@ -17,21 +16,18 @@ function [c, s, t] = jacobi(alpha, beta, gamma)
 % -------------------------------------------------
 
 if beta ~= 0
-    tau = (gamma - alpha) / (2 * beta);
+    tau = (gamma-alpha) / (2*beta);
     if tau >= 0
-        t = 1 / (tau + sqrt(1 + tau^2));
+        t = 1 / (tau + sqrt(1+tau^2));
     else
-        t = - 1 / (- tau + sqrt(1 + tau^2));
+        t = -1 / (- tau + sqrt(1+tau^2));
     end
-    c = 1 / sqrt(1 + t^2);
-    s = t * c;
+    c = 1 / sqrt(1+t^2); s = t * c;
 else
-    c = 1;
-    s = 0;
-    t = 0;
+    c = 1; s = 0; t = 0;
 end
 
-if nargout <= 2
+if nargout <= 2  % Output [G, t]
     c = [c, s; -s, c];
     s = t;
 end
