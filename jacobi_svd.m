@@ -1,4 +1,4 @@
-function [sigma, U, V] = jacobi_svd(A, method)
+function [sigma, U, V, i, j] = jacobi_svd(A, method)
 % JACOBI_SVD    Singular value decomposition using one-side Jacobi method
 %
 % Here, the function computes singular values and corresponding singular vectors
@@ -51,21 +51,32 @@ if strcmp(method, 'qr') || strcmp(method, 'derijk-qr')
     if k  % k < n
         [Q1, R1] = qr(R(1:k, 1:n)');
         R1 = R1(1:k, 1:k);
-        [sigma, U1, V1] = jacobi_svd(R1', method);
-        U = Q * blkdiag(U1, eye(m-k));
-        U = U(:, 1:k);
-        V = Q1 * blkdiag(V1, eye(n-k));
-        V = V(p, :);
+        if nargout > 1
+            [sigma, U1, V1, i, j] = jacobi_svd(R1', method);
+            U = Q * blkdiag(U1, eye(m-k));
+            U = U(:, 1:k);
+            V = Q1 * blkdiag(V1, eye(n-k));
+            V = V(p, :);
+        else
+            sigma = jacobi_svd(R1', method);
+        end
     else  % k == n
-        [sigma, U1, V1] = jacobi_svd(R', method);
-        U = Q * blkdiag(V1, eye(m-n));
-        U = U(:, 1:n);
-        V = U1(p(p), :);
+        if nargout > 1
+            [sigma, U1, V1, i, j] = jacobi_svd(R', method);
+            U = Q * blkdiag(V1, eye(m-n));
+            U = U(:, 1:n);
+            V = U1(p(p), :);
+        else
+            sigma = jacobi_svd(R', method);
+        end
     end
     return;
 end
 
+i = 0;
+j = 0;
 while rots >= 1
+    i = i + 1;
     rots = 0;
     for p = 1:n-1
         if strcmp(method, 'derijk')
@@ -81,6 +92,7 @@ while rots >= 1
             beta = A(:, p)'*A(:, q);
             if sigma(p)*sigma(q) > 0 && ...
             abs(beta) >= tol * sqrt(sigma(p)*sigma(q))
+                j = j + 1;
                 rots = rots + 1;
                 [G, t] = jacobi(sigma(p), beta, sigma(q));
                 sigma(p) = sigma(p) - beta*t;
