@@ -2,9 +2,9 @@
 
 This repository contains numerical experiments on Jacobi SVD algorithm.
 
-# Results
-<div align="center"><img src="figures/scan-times.svg" width="512px"></div>
-<div align="center"><img src="figures/trans-times.svg" width="512px"></div>
+## Results
+I carried out an experiment to test utility of several accelerating strategies in Jacobi SVD algorithm. For methods without accelerating, with de Rijk strategy or QR preprocessing, the experiment compares scanning times and transformation times.
+<div align="center"><img src="figures/scan-times.svg" width="400px"><img src="figures/trans-times.svg" width="400px"></div>
 
 ## References
 1. 徐树方，钱江 (2011). _**矩阵计算六讲.**_ 北京：高等教育出版社．INFO: [Here](http://www.hep.edu.cn/book/details?uuid=52897a2b-1414-1000-bb7f-3fafc67de19c&objectId=oid:52897b11-1414-1000-bb82-3fafc67de19c).
