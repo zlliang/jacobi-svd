@@ -28,25 +28,43 @@ A = [1e40, 1e29, 1e19; 1e29, 1e20, 1e9; 1e19, 1e9, 1];
 
 clear; close all; clc;
 
-nlen = 9;
+nlen = 20;
 mtdlen = 4;
-rep = 5;
+rep = 10;
 ms = floor(linspace(50, 300, nlen));
-ns = floor(linspace(20, 100, nlen));
+ns = floor(linspace(25, 150, nlen));
+ks = floor(linspace(10, 60, nlen));
 methods = {'none', 'derijk', 'qr', 'derijk-qr'};
-scan = zeros(mtdlen, nlen);
-trans = zeros(mtdlen, nlen);
+scan = zeros(nlen, mtdlen);
+trans = zeros(nlen, mtdlen);
 for i = 1:nlen
     i
     for r = 1:rep
         A = rand(ms(i), ns(i));
+        [U, D, V] = svd(A);
+        A = U(:, 1:ks(i)) * D(1:ks(i), 1:ks(i)) * V(:, 1:ks(i))';
         for m = 1:mtdlen
             [~, ~, ~, s, t] = jacobi_svd(A, methods{m});
-            scan(m, i) = scan(m, i) + s;
-            trans(m, i) = trans(m, i) + t;
+            scan(i, m) = scan(i, m) + s;
+            trans(i, m) = trans(i, m) + t;
         end
     end
 end
-scan = scan / rep;
-trans = trans / rep;
+scan = scan ./ rep;
+trans = trans ./ rep;
+figure(1);
+plot(ns, scan, '.-', 'LineWidth', 1);
+legend(methods);
+xlabel('dim: $2n \times n$');
+ylabel('Scanning times');
+setstyle(gca, 'latex');
+title('Experiment: Scanning times');
+figure(2);
+plot(ns, sqrt(trans), '.-', 'LineWidth', 1);
+legend(methods);
+xlabel('dim: $2n \times n$');
+ylabel('Transformation Times$^{1/2}$');
+setstyle(gca, 'latex');
+title('Experiment: Transformation times');
+
 

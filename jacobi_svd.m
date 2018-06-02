@@ -38,6 +38,7 @@ sigma = sum(A.^2)';
 if nargout > 1
     V = eye(n);
 end
+
 if strcmp(method, 'qr') || strcmp(method, 'derijk-qr')
     % Recursively call the function itself, with QR preprocessing
     if strcmp(method, 'qr')
@@ -47,7 +48,7 @@ if strcmp(method, 'qr') || strcmp(method, 'derijk-qr')
     end
     [Q, R, p] = qr(A, 'vector');
     R = R(1:n, 1:n);
-    k = find(abs(diag(R)) < eps * norm(R, 'fro'), 1);
+    k = find(abs(diag(R)) < eps * norm(R, 'fro'), 1) - 1;
     if k  % k < n
         [Q1, R1] = qr(R(1:k, 1:n)');
         R1 = R1(1:k, 1:k);
@@ -75,6 +76,7 @@ end
 
 i = 0;
 j = 0;
+tolsigma = tol * norm(A, 'fro');
 while rots >= 1
     i = i + 1;
     rots = 0;
@@ -90,7 +92,7 @@ while rots >= 1
         end
         for q = p+1:n
             beta = A(:, p)'*A(:, q);
-            if sigma(p)*sigma(q) > 0 && ...
+            if sigma(p)*sigma(q) > tolsigma && ...
             abs(beta) >= tol * sqrt(sigma(p)*sigma(q))
                 j = j + 1;
                 rots = rots + 1;
