@@ -7,11 +7,11 @@ function [sigma, U, V, i, j] = jacobi_svd(A, method)
 %
 % argin:
 %   A: The input matrix (size: m x n, and m > n)
-%   method (optional): One of the following strategies
-%       'none': Without any speed-up strategy
-%       'derijk':
-%       'qr':
-%       'derijk-qr':
+%   method (optional): One of the following strategies:
+%       'none',
+%       'derijk',
+%       'qr',
+%       'derijk-qr'.
 %
 % usage:
 %   sigma = JACOBI_SVD(A)
