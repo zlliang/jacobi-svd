@@ -27,20 +27,16 @@ function [sigma, U, V, i, j] = jacobi_svd(A, method)
 % Date:   2018-06-01
 % -------------------------------------------------
 
-% Check inputs, set stopping criteria and initialize
+% Check inputs
 if nargin < 2
     method = 'none';
 end
 [m, n] = size(A);
-tol = 1e-14;
-rots = 1;
-sigma = sum(A.^2)';
-if nargout > 1
-    V = eye(n);
-end
 
+% Check if QR preprocessing is chosen, and recursively call the function itself,
+% with QR preprocessing
 if strcmp(method, 'qr') || strcmp(method, 'derijk-qr')
-    % Recursively call the function itself, with QR preprocessing
+    
     if strcmp(method, 'qr')
         method = 'none';
     else
@@ -74,6 +70,15 @@ if strcmp(method, 'qr') || strcmp(method, 'derijk-qr')
     return;
 end
 
+% Initialize
+tol = 1e-14;
+rots = 1;
+sigma = sum(A.^2)';
+if nargout > 1
+    V = eye(n);
+end
+
+% Scanning
 i = 0;
 j = 0;
 tolsigma = tol * norm(A, 'fro');
@@ -107,6 +112,8 @@ while rots >= 1
         end
     end
 end
+
+% Post-processing
 [sigma, indices] = sort(sigma, 'descend');
 if nargout > 1
     U = A(:, indices);
